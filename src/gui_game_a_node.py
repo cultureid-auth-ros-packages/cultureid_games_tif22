@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import sys
+import os
 import time
 import rospy
 from std_msgs.msg import Empty
@@ -123,6 +124,8 @@ class GuiGameA():
 ################################################################################
   def gui_start_callback(self, msg):
 
+    rospy.logwarn('[cultureid_tiff22_game] gui_start_callback')
+
     if self.q == 0:
       self.start_game()
     elif self.q < len(self.tag_epcs):
@@ -161,6 +164,10 @@ class GuiGameA():
       rospy.logwarn('waiting to receive stop at wp signal')
       rospy.wait_for_message(self.stopped_at_waypoint_topic, Empty)
       rospy.logwarn('received stop at wp signal')
+
+      rospy.signal_shutdown('game over')
+      os._exit(os.EX_OK)
+      #sys.exit(0)
 
     else:
       self.wrong_answer()
