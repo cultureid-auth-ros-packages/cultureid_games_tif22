@@ -62,10 +62,10 @@ class GuiGameA():
 
     # Publishes a msg that alerts the fsm that the rfid reader should start
     # reading for the desired EPC
-    self.read_rfid_card_alert_pub = rospy.Publisher(self.read_rfid_card_alert_topic, Empty, queue_size=1)
+    self.read_rfid_card_alert_pub = rospy.Publisher(self.read_rfid_card_alert_topic, Empty, queue_size=1, latch=True)
 
     # Publishes a msg that alerts the fsm that this level (self.q) is finished
-    self.level_finished_alert_pub = rospy.Publisher(self.level_finished_alert_topic, Empty, queue_size=1)
+    self.level_finished_alert_pub = rospy.Publisher(self.level_finished_alert_topic, Empty, queue_size=1, latch=True)
 
 
 
@@ -154,6 +154,8 @@ class GuiGameA():
 
       self.q = self.q + 1
 
+      call(['cvlc', '--no-repeat','--play-and-exit','/home/cultureid_user0/Desktop/oh_yeah.mp3'])
+
       # Let the fsm know that the rfid reader should start execution
       rospy.logwarn('[cultureid_tiff22_game] Sending msg to alert for level finish')
       empty_msg = Empty()
@@ -164,10 +166,6 @@ class GuiGameA():
       rospy.logwarn('waiting to receive stop at wp signal')
       rospy.wait_for_message(self.stopped_at_waypoint_topic, Empty)
       rospy.logwarn('received stop at wp signal')
-
-      rospy.signal_shutdown('game over')
-      os._exit(os.EX_OK)
-      #sys.exit(0)
 
     else:
       self.wrong_answer()
@@ -235,7 +233,7 @@ class GuiGameA():
 ################################################################################
   def kill_root(self):
     self.root.destroy()
-    self.root.update()
+    os._exit(os.EX_OK)
 
 
 ################################################################################
@@ -328,7 +326,7 @@ class GuiGameA():
 
     playButton = Tkinter.Button(frame,text='???',fg='black',bg='white')
     buttonVec.append(playButton)
-    buttonText.append('Bravo! Correct Answer! Follow Me!')
+    buttonText.append('Bravo! Correct Answer!')
 
     if self.q == len(self.tag_epcs)-1:
       playButton.config(text='Emfanish apotelematwn')
@@ -540,14 +538,14 @@ class GuiGameA():
     while correct_answer == False:
       msg = rospy.wait_for_message(self.epc_answer_validity_topic, Int8)
       if msg.data == 1:
-        QButton.config(text='CORRECT MOTHOFOCO')
+        QButton.config(text='CORRECT!')
         QButton.config(command=self.showQm)
         QButton.update()
         rospy.sleep(2.0)
         correct_answer = True
       if msg.data == 0:
         self.total_errors = self.total_errors+1
-        QButton.config(text='WRONG MOTHOFOCO')
+        QButton.config(text='WRONG :(')
         QButton.update()
 
 

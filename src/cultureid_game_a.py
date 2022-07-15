@@ -65,7 +65,7 @@ class ReadRFIDCard(State):
     self.read_rfid_card_alert_topic = rospy.get_param('~read_rfid_card_alert_topic', 'read_rfid_card_alert')
     self.rfid_java_exec_dir = rospy.get_param('~rfid_java_exec_dir', 'rfid_java_exec_dir')
     self.epc_answer_validity_topic  = rospy.get_param('~epc_answer_validity_topic', 'epc_answer_validity')
-    self.epc_answer_validity_pub = rospy.Publisher(self.epc_answer_validity_topic, Int8, queue_size=1)
+    self.epc_answer_validity_pub = rospy.Publisher(self.epc_answer_validity_topic, Int8, queue_size=1, latch=True)
 
   ############################################################################
   def execute(self, userdata):
@@ -210,7 +210,7 @@ class EndState(State):
 
     self.waypoint_following_node_name = "/" + rospy.get_param('~waypoint_following_node_name', 'cultureid_waypoints_following')
     self.stopped_at_waypoint_topic = self.waypoint_following_node_name + "/" + rospy.get_param('~stopped_at_waypoint_topic', 'stopped_at_waypoint')
-    self.last_wp_reached_pub = rospy.Publisher(self.stopped_at_waypoint_topic, Empty, queue_size=1)
+    self.last_wp_reached_pub = rospy.Publisher(self.stopped_at_waypoint_topic, Empty, queue_size=10, latch=True)
 
   ############################################################################
   def execute(self, userdata):
@@ -219,13 +219,32 @@ class EndState(State):
     empty_msg = Empty()
     self.last_wp_reached_pub.publish(empty_msg)
 
-    rospy.signal_shutdown('game over')
-    os._exit(os.EX_OK)
-    sys.exit(0)
+#    rospy.signal_shutdown('game over')
+    #rospy.sleep(5.0)
+    #os._exit(os.EX_OK)
+    #sys.exit(0)
 
     return 'game_over'
 
 
+
+
+
+################################################################################
+################################################################################
+class ShutdownState(State):
+
+  ############################################################################
+  def __init__(self):
+    State.__init__(self, outcomes=[], input_keys=[], output_keys=[])
+
+  ############################################################################
+  def execute(self, userdata):
+
+    rospy.signal_shutdown('game over')
+    os._exit(os.EX_OK)
+
+    return
 
 
 
@@ -257,7 +276,10 @@ def main():
                        transitions={'iterate':'GOTO_INIT_POSE', 'end':'END_STATE'},
                        remapping={'g_counter':'g_counter'})
     StateMachine.add('END_STATE', EndState(),
-                       transitions={'game_over':'END_STATE'},
+                       transitions={'game_over':'SHUTDOWN_STATE'},
+                       remapping={})
+    StateMachine.add('SHUTDOWN_STATE', ShutdownState(),
+                       transitions={},
                        remapping={})
 
   outcome = sm.execute()
