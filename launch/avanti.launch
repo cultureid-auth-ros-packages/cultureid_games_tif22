@@ -1,21 +1,21 @@
 <launch>
 
   <arg name="game_id"   default="a" />
-  <arg name="ppkg"      default="$(find cultureid_tiff22_game)" />
+  <arg name="ppkg"      default="$(find cultureid_tiff22_game_gui_only)" />
   <arg name="map_name" />
 
   <!-- GUI node -->
-  <node name="cultureid_gui_game_a" pkg="cultureid_tiff22_game" type="gui_game_a_node.py" output="screen">
-    <param name="dir_media"    value="$(find cultureid_tiff22_game)/gui_resources/$(arg game_id)_media" />
-    <param name="dir_scripts"  value="$(find cultureid_tiff22_game)/gui_resources/$(arg game_id)_scripts" />
-    <rosparam command="load" file="$(find cultureid_tiff22_game)/config/params_gui_game_$(arg game_id).yaml" />
+  <node name="cultureid_gui_game_a" pkg="cultureid_tiff22_game_gui_only" type="gui_game_a_node.py" output="screen">
+    <param name="dir_media"    value="$(find cultureid_tiff22_game_gui_only)/gui_resources/$(arg game_id)_media" />
+    <param name="dir_scripts"  value="$(find cultureid_tiff22_game_gui_only)/gui_resources/$(arg game_id)_scripts" />
+    <rosparam command="load" file="$(find cultureid_tiff22_game_gui_only)/config/params_gui_game_$(arg game_id).yaml" />
   </node>
 
   <!-- FSM node -->
-  <node name="cultureid_game_a" pkg="cultureid_tiff22_game" type="cultureid_game_a.py" output="screen">
+  <node name="cultureid_game_a" pkg="cultureid_tiff22_game_gui_only" type="cultureid_game_a.py" output="screen">
     <param name="ppkg"                     value="$(arg ppkg)" />
-    <param name="rfid_java_exec_dir"       value="$(find cultureid_tiff22_game)/rfid_detection_resources/game_$(arg game_id)" />
-    <rosparam command="load" file="$(find cultureid_tiff22_game)/config/params_game_$(arg game_id).yaml" />
+    <param name="rfid_java_exec_dir"       value="$(find cultureid_tiff22_game_gui_only)/rfid_detection_resources/game_$(arg game_id)" />
+    <rosparam command="load" file="$(find cultureid_tiff22_game_gui_only)/config/params_game_$(arg game_id).yaml" />
   </node>
 
 

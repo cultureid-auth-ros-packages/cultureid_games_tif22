@@ -122,6 +122,8 @@ class GuiGameA():
 
 
 ################################################################################
+# This is the entry point
+################################################################################
   def gui_start_callback(self, msg):
 
     rospy.logwarn('[cultureid_tiff22_game] gui_start_callback')
@@ -142,7 +144,7 @@ class GuiGameA():
   def end_game(self):
 
     self.root.destroy()
-    sys.exit(1)
+    os._exit(os.EX_OK)
     return
 
 
@@ -154,7 +156,7 @@ class GuiGameA():
 
       self.q = self.q + 1
 
-      call(['cvlc', '--no-repeat','--play-and-exit','/home/cultureid_user0/Desktop/oh_yeah.mp3'])
+      call(['cvlc', '--no-repeat','--play-and-exit', self.dir_media + '/tiff_game_over_ohyeah.mp3'])
 
       # Let the fsm know that the rfid reader should start execution
       rospy.logwarn('[cultureid_tiff22_game] Sending msg to alert for level finish')
@@ -233,6 +235,7 @@ class GuiGameA():
 ################################################################################
   def kill_root(self):
     self.root.destroy()
+    rospy.signal_shutdown('game over')
     os._exit(os.EX_OK)
 
 

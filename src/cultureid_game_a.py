@@ -206,7 +206,7 @@ class EndState(State):
 
   ############################################################################
   def __init__(self):
-    State.__init__(self, outcomes=['game_over'], input_keys=[], output_keys=[])
+    State.__init__(self, outcomes=[], input_keys=[], output_keys=[])
 
     self.waypoint_following_node_name = "/" + rospy.get_param('~waypoint_following_node_name', 'cultureid_waypoints_following')
     self.stopped_at_waypoint_topic = self.waypoint_following_node_name + "/" + rospy.get_param('~stopped_at_waypoint_topic', 'stopped_at_waypoint')
@@ -219,33 +219,11 @@ class EndState(State):
     empty_msg = Empty()
     self.last_wp_reached_pub.publish(empty_msg)
 
-#    rospy.signal_shutdown('game over')
-    #rospy.sleep(5.0)
-    #os._exit(os.EX_OK)
-    #sys.exit(0)
-
-    return 'game_over'
-
-
-
-
-
-################################################################################
-################################################################################
-class ShutdownState(State):
-
-  ############################################################################
-  def __init__(self):
-    State.__init__(self, outcomes=[], input_keys=[], output_keys=[])
-
-  ############################################################################
-  def execute(self, userdata):
-
+    rospy.sleep(3.0)
     rospy.signal_shutdown('game over')
     os._exit(os.EX_OK)
 
     return
-
 
 
 ################################################################################
@@ -253,7 +231,7 @@ class ShutdownState(State):
 def main():
 
   # Init node
-  rospy.init_node('cultureid_game_a', disable_signals=True)
+  rospy.init_node('cultureid_tiff_game_a')
 
   #global this_node_name
   #this_node_name = rospy.get_name().lstrip('/')
@@ -276,11 +254,9 @@ def main():
                        transitions={'iterate':'GOTO_INIT_POSE', 'end':'END_STATE'},
                        remapping={'g_counter':'g_counter'})
     StateMachine.add('END_STATE', EndState(),
-                       transitions={'game_over':'SHUTDOWN_STATE'},
-                       remapping={})
-    StateMachine.add('SHUTDOWN_STATE', ShutdownState(),
                        transitions={},
                        remapping={})
+
 
   outcome = sm.execute()
 
