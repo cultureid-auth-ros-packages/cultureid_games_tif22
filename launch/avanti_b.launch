@@ -1,0 +1,12 @@
+<launch>
+
+  <arg name="game_id"   default="b" />
+  <arg name="ppkg"      default="$(find cultureid_games_tif22)" />
+
+  <node name="cultureid_games_tif22_game_$(arg game_id)" pkg="cultureid_games_tif22" type="game_$(arg game_id).py" output="screen">
+    <param name="dir_media"           value="$(arg ppkg)/gui_resources/$(arg game_id)_media" />
+    <param name="dir_scripts"         value="$(arg ppkg)/gui_resources/$(arg game_id)_scripts" />
+    <rosparam command="load"          file="$(arg ppkg)/config/params_game_$(arg game_id).yaml" />
+  </node>
+
+</launch>

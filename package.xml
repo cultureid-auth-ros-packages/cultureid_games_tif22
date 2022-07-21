@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>cultureid_tiff22_game_gui_only</name>
+  <name>cultureid_games_tif22</name>
   <version>0.0.0</version>
-  <description>The cultureid_tiff22_game_gui_only package</description>
+  <description>The cultureid_games_tif22 package</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
   <!-- Example:  -->

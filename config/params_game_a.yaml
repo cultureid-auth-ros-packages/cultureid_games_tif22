@@ -1,7 +1,5 @@
 # Topics subscribed/publishing to
 waypoint_following_node_name:       'cultureid_waypoints_following'
-go_to_next_waypoint_trigger_topic:  'go_to_next_waypoint_trigger'
-file_waypoints_ready_topic:         'file_waypoints_ready'
 stopped_at_waypoint_topic:          'stopped_at_waypoint'
 gui_start_topic:                    'gui_start'
 read_rfid_card_alert_topic:         'read_rfid_card_alert'

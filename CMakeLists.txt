@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(cultureid_tiff22_game_gui_only)
+project(cultureid_games_tif22)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)

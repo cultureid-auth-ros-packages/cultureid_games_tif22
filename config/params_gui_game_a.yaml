@@ -1,7 +1,0 @@
-# Topics subscribed/publishing to
-waypoint_following_node_name:       'cultureid_waypoints_following'
-stopped_at_waypoint_topic:          'stopped_at_waypoint'
-gui_start_topic:                    'gui_start'
-read_rfid_card_alert_topic:         'read_rfid_card_alert'
-level_finished_alert_topic:         'level_finished_alert'
-epc_answer_validity_topic:          'epc_answer_validity'
