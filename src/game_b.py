@@ -18,6 +18,9 @@ from sys import argv
 import actionlib
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal, MoveBaseFeedback, MoveBaseResult
 
+from nav_msgs.msg import Path
+from geometry_msgs.msg import Pose, PoseStamped
+
 
 
 class GuiGameB():
@@ -73,9 +76,15 @@ class GuiGameB():
 
     # Move base action server
     self.action_client = actionlib.SimpleActionClient('/move_base', MoveBaseAction)
-    #rospy.loginfo("Waiting for move base server")
-    #self.action_client.wait_for_server()
+    rospy.loginfo("Waiting for move base server")
+    self.action_client.wait_for_server()
 
+    self.waypoints_topic = '/cultureid_waypoints_following/rviz_waypoints'
+    self.waypoints_trigger_topic = '/cultureid_waypoints_following/rviz_waypoints_ready'
+    self.waypoints_stop_alert_topic = '/cultureid_waypoints_following/stopped_at_waypoint'
+
+    self.waypoints_pub = rospy.Publisher(self.waypoints_topic, Path, queue_size=1, latch=True)
+    self.waypoints_ready_pub = rospy.Publisher(self.waypoints_trigger_topic, Empty, queue_size=1, latch=True)
 
 
     # Go to start pose (you are the host)
@@ -103,8 +112,8 @@ class GuiGameB():
 
     # Maybe clear costmaps here TODO
     rospy.logwarn('sending goal and waiting for result')
-    #self.action_client.send_goal(goal)
-    #self.action_client.wait_for_result()
+    self.action_client.send_goal(goal)
+    self.action_client.wait_for_result()
 
     rospy.logwarn('am at pose %d' %num)
 
@@ -114,6 +123,45 @@ class GuiGameB():
       self.start_video(num)
 
     return
+
+
+#################################################################################
+  #def goto_pose(self, num):
+
+    ## Orientation is quaternion
+    #goal = PoseStamped()
+    #goal.header.frame_id = 'map'
+    #goal.pose.position.x = self.poses[num][0]
+    #goal.pose.position.y = self.poses[num][1]
+    #goal.pose.position.z = self.poses[num][2]
+    #goal.pose.orientation.x = self.poses[num][3]
+    #goal.pose.orientation.y = self.poses[num][4]
+    #goal.pose.orientation.z = self.poses[num][5]
+    #goal.pose.orientation.w = self.poses[num][6]
+    #path = Path()
+    #path.poses.append(goal)
+
+    ## Maybe clear costmaps here TODO
+    #rospy.logwarn('sending goal and waiting for result')
+
+    ## Send goal
+    #self.waypoints_pub.publish(path)
+
+    ## Enable goal
+    #em = Empty()
+    #self.waypoints_ready_pub.publish(em)
+
+    ## Wait until robot goes to pose
+    #rospy.wait_for_message(self.waypoints_stop_alert_topic, Empty)
+
+    #rospy.logwarn('am at pose %d' %num)
+
+    #if (num == 0):
+      #self.start_game()
+    #else:
+      #self.start_video(num)
+
+    #return
 
 
 
@@ -231,7 +279,7 @@ class GuiGameB():
     buttonText = []
 
     for answer,num in zip(this_Am,range(len(this_Am))):
-      this_butt = Tkinter.Button(frame,text='???',fg='black',bg='white',command=partial(self.goto_pose,num+1))
+      this_butt = Tkinter.Button(frame,text='???',fg='black',bg='white',activebackground="green",command=partial(self.goto_pose,num+1))
       buttonVec.append(this_butt)
       buttonText.append(answer)
 
@@ -330,15 +378,6 @@ class GuiGameB():
         buttonVec[counter].update()
 
         counter = counter+1
-    '''
-    ## wait for state change
-    ch_bool = wait_state_change()
-    while ch_bool == False:
-      print(ch_bool)
-      time.sleep(1)
-      ch_bool = wait_state_change()
-    '''
-
 
 
 ################################################################################
