@@ -210,7 +210,7 @@ class GuiGameA():
     buttonText.append('Game Time: '+str(total_time)+' s')
 
     # exit button
-    exitBut = Tkinter.Button(frame,text='???',fg='black',bg='white',command=self.kill_root)
+    exitBut = Tkinter.Button(frame,text='???',fg='black',bg='white',command=self.start_game)
     buttonVec.append(exitBut)
     buttonText.append('Quit :(')
 

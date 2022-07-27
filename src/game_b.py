@@ -113,6 +113,12 @@ class GuiGameB():
     # Maybe clear costmaps here TODO
     rospy.logwarn('sending goal and waiting for result')
     self.action_client.send_goal(goal)
+
+    if (num == 0):
+      self.display_message('PLEASE WAIT WHILE I GO TO MY STARTING POSE')
+    else:
+      self.display_message('COME WITH ME IF YOU WANT TO LIVE')
+
     self.action_client.wait_for_result()
 
     rospy.logwarn('am at pose %d' %num)
@@ -204,6 +210,7 @@ class GuiGameB():
 
     call(['vlc','--no-repeat','--fullscreen','--play-and-exit', self.dir_media + '/' + str(self.q)+'.mp4'])
 
+    self.display_message('LIKE AND SUBSCRIBE')
     rospy.sleep(10.0)
 
     # Go to the beginning
@@ -436,6 +443,67 @@ class GuiGameB():
         buttonVec[counter].update()
 
         counter = counter+1
+
+
+################################################################################
+  def display_message(self, message):
+    rospy.logwarn('display_message')
+
+    # clean window
+    for frames in self.root.winfo_children():
+      frames.destroy()
+
+    # new canvas
+    canvas = Tkinter.Canvas(self.root)
+    canvas.configure(bg='red')
+    canvas.pack(fill=Tkinter.BOTH,expand=True)
+
+    # to frame panw sto opoio 8a einai ta koumpia
+    frame = Tkinter.Frame(self.root,bg='grey')
+    frame.place(relwidth=0.95,relheight=0.95,relx=0.025,rely=0.025)
+
+    # ta koumpia tou para8urou
+    buttonVec = []
+    buttonText = []
+
+    waiting_for_pose = Tkinter.Button(frame,text='???',fg='black',bg='white')
+    buttonVec.append(waiting_for_pose)
+    buttonText.append(message)
+    #buttonText.append('COME WITH ME IF YOU WANT TO LIVE')
+
+    xNum = 1
+    yNum = len(buttonVec)
+
+    xEff = 1
+    yEff = 1
+
+    GP = 0.05
+
+    xWithGuard = xEff/xNum
+    xG = GP*xWithGuard
+    xB = xWithGuard-xG
+
+    yWithGuard = yEff/yNum
+    yG = GP*yWithGuard
+    yB = yWithGuard-yG
+
+    counter = 0
+    for xx in range(xNum):
+      for yy in range(yNum):
+        thisX = xG/2+xx*xWithGuard
+        thisY = yG/2+yy*yWithGuard
+
+        buttonVec[counter].place(relx=thisX,rely=thisY,relheight=yB,relwidth=xB)
+        buttonVec[counter].config(text=buttonText[counter])
+        buttonVec[counter].update()
+
+        thisWidth = buttonVec[counter].winfo_width()
+        thisHeight = buttonVec[counter].winfo_height()
+        buttonVec[counter].update()
+
+        counter = counter+1
+
+
 
 
 
